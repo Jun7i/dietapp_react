@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
+import { _posts, _tasks, _traffic } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { _posts, _tasks, _traffic, _timeline } from 'src/_mock';
 
 import { AnalyticsNews } from '../analytics-news';
 import { AnalyticsTasks } from '../analytics-tasks';
@@ -19,9 +19,6 @@ import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 export function OverviewAnalyticsView() {
   return (
     <DashboardContent maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Hi, Welcome back 👋
-      </Typography>
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -139,9 +136,6 @@ export function OverviewAnalyticsView() {
           <AnalyticsNews title="News" list={_posts.slice(0, 5)} />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsOrderTimeline title="Order timeline" list={_timeline} />
-        </Grid>
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsTrafficBySite title="Traffic by site" list={_traffic} />

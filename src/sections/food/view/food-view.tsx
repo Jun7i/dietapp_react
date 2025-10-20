@@ -5,15 +5,15 @@ import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 
-import { _products } from 'src/_mock';
+import { _food } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { ProductItem } from '../product-item';
-import { ProductSort } from '../product-sort';
-import { CartIcon } from '../product-cart-widget';
-import { ProductFilters } from '../product-filters';
+import { FoodItem } from '../food-item';
+import { FoodSort } from '../food-sort';
+import { FoodFilters } from '../food-filters';
+import { CartIcon } from '../food-cart-widget';
 
-import type { FiltersProps } from '../product-filters';
+import type { FiltersProps } from '../food-filters';
 
 // ----------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ const defaultFilters = {
   category: CATEGORY_OPTIONS[0].value,
 };
 
-export function ProductsView() {
+export function FoodView() {
   const [sortBy, setSortBy] = useState('featured');
 
   const [openFilter, setOpenFilter] = useState(false);
@@ -89,7 +89,7 @@ export function ProductsView() {
       <CartIcon totalItems={8} />
 
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Products
+        Food
       </Typography>
       <Box
         sx={{
@@ -108,7 +108,7 @@ export function ProductsView() {
             display: 'flex',
           }}
         >
-          <ProductFilters
+          <FoodFilters
             canReset={canReset}
             filters={filters}
             onSetFilters={handleSetFilters}
@@ -125,7 +125,7 @@ export function ProductsView() {
             }}
           />
 
-          <ProductSort
+          <FoodSort
             sortBy={sortBy}
             onSort={handleSort}
             options={[
@@ -139,9 +139,9 @@ export function ProductsView() {
       </Box>
 
       <Grid container spacing={3}>
-        {_products.map((product) => (
-          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 3 }}>
-            <ProductItem product={product} />
+        {_food.map((food) => (
+          <Grid key={food.id} size={{ xs: 12, sm: 6, md: 3 }}>
+            <FoodItem food={food} />
           </Grid>
         ))}
       </Grid>

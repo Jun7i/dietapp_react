@@ -116,8 +116,6 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
 
       {slots?.topArea}
 
-      <WorkspacesPopover data={workspaces} sx={{ my: 2 }} />
-
       <Scrollbar fillContent>
         <Box
           component="nav"
@@ -187,8 +185,6 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
       </Scrollbar>
 
       {slots?.bottomArea}
-
-      <NavUpgrade />
     </>
   );
 }

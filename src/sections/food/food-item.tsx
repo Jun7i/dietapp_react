@@ -11,21 +11,24 @@ import { ColorPreview } from 'src/components/color-utils';
 
 // ----------------------------------------------------------------------
 
-export type ProductItemProps = {
+export type FoodItemProps = {
   id: string;
   name: string;
-  price: number;
-  status: string;
   coverUrl: string;
-  colors: string[];
-  priceSale: number | null;
+  nutrients?: {
+    energy?: number;
+    proteins?: number;
+    carbohydrates?: number;
+    fat?: number;
+  };
+  status?: string;
 };
 
-export function ProductItem({ product }: { product: ProductItemProps }) {
+export function FoodItem({ food }: { food: FoodItemProps }) {
   const renderStatus = (
     <Label
       variant="inverted"
-      color={(product.status === 'sale' && 'error') || 'info'}
+      color={(food.status === 'sale' && 'error') || 'info'}
       sx={{
         zIndex: 9,
         top: 16,
@@ -34,15 +37,15 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
         textTransform: 'uppercase',
       }}
     >
-      {product.status}
+      {food.status}
     </Label>
   );
 
   const renderImg = (
     <Box
       component="img"
-      alt={product.name}
-      src={product.coverUrl}
+      alt={food.name}
+      src={food.coverUrl}
       sx={{
         top: 0,
         width: 1,
@@ -53,33 +56,27 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
     />
   );
 
-  const renderPrice = (
-    <Typography variant="subtitle1">
-      <Typography
-        component="span"
-        variant="body1"
-        sx={{
-          color: 'text.disabled',
-          textDecoration: 'line-through',
-        }}
-      >
-        {product.priceSale && fCurrency(product.priceSale)}
-      </Typography>
-      &nbsp;
-      {fCurrency(product.price)}
+  const renderNutrients = (
+    <Typography variant="subtitle2" color="text.secondary">
+      {food.nutrients && (
+        <>
+          {food.nutrients.energy && `${food.nutrients.energy} kcal`}
+          {food.nutrients.proteins && ` • ${food.nutrients.proteins}g protein`}
+        </>
+      )}
     </Typography>
   );
 
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {product.status && renderStatus}
+        {food.status && renderStatus}
         {renderImg}
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
-          {product.name}
+          {food.name}
         </Link>
 
         <Box
@@ -89,8 +86,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
             justifyContent: 'space-between',
           }}
         >
-          <ColorPreview colors={product.colors} />
-          {renderPrice}
+          {renderNutrients}
         </Box>
       </Stack>
     </Card>
