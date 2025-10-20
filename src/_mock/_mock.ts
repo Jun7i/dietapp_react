@@ -1,3 +1,4 @@
+
 export const _id = (index: number) => `e99f09a7-dd88-49d5-b1c8-1daf80c2d7b${index}`;
 
 export const _times = (index: number) =>
@@ -180,5 +181,6 @@ export const _taskNames = (index: number) =>
     `Optimize SEO Strategies`,
   ][index];
 
+// this is for food with cover
 export const _foodNames = (index: number) =>
-  Array.from({ length: 30 }, (_, i) => `Food ${i + 1}`)[index];
+  Array.from({ length: 30 }, (_, i) => `Food ${i + 1}`)[index]; 
