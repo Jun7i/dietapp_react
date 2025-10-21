@@ -5,9 +5,6 @@ import {
   _company,
   _boolean,
   _foodName,
-  _taskNames,
-  _postTitles,
-  _description,
   _foodNames,
 } from './_mock';
 
@@ -40,22 +37,6 @@ export const _users = [...Array(24)].map((_, index) => ({
 }));
 
 // ----------------------------------------------------------------------
-
-export const _posts = [...Array(23)].map((_, index) => ({
-  id: _id(index),
-  title: _postTitles(index),
-  description: _description(index),
-  coverUrl: `/assets/images/cover/cover-${index + 1}.webp`,
-  totalViews: 8829,
-  totalComments: 7977,
-  totalShares: 8556,
-  totalFavorites: 8870,
-  postedAt: _times(index),
-  author: {
-    name: _foodName(index),
-    avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
-  },
-}));
 
 // ----------------------------------------------------------------------
 
@@ -94,37 +75,4 @@ export const _food = [...Array(24)].map((_, index) => {
 
 // ----------------------------------------------------------------------
 
-
-
-
-
-export const _traffic = [
-  {
-    value: 'facebook',
-    label: 'Facebook',
-    total: 19500,
-  },
-  {
-    value: 'google',
-    label: 'Google',
-    total: 91200,
-  },
-  {
-    value: 'linkedin',
-    label: 'Linkedin',
-    total: 69800,
-  },
-  {
-    value: 'twitter',
-    label: 'Twitter',
-    total: 84900,
-  },
-];
-
-export const _tasks = Array.from({ length: 5 }, (_, index) => ({
-  id: _id(index),
-  name: _taskNames(index),
-}));
-
-// ----------------------------------------------------------------------
 

@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom'; // 1. Import useSearchParams
 import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
@@ -63,132 +64,119 @@ interface FoodData {
   code: string;
   image_url: string;
   product_name: string;
-  generic_name?: string;
-  // ... add other relevant columns from foodtbl
-  fat_100g?: number;
-  carbohydrates_100g?: number;
-  proteins_100g?: number;
-  energy_kcal_100g?: number;
-  // ... etc.
+  // Note: nutrients will be missing from search, we handle this below
 }
 
 // export function FoodView() {
-//   const [sortBy, setSortBy] = useState('featured');
+//   const [foods, setFoods] = useState<FoodData[]>([]); // Use the interface here
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
 
-//   const [openFilter, setOpenFilter] = useState(false);
+//   // ... other state like filters, sort, etc.
 
-//   const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
+//   useEffect(() => {
+//     const fetchFoods = async () => {
+//       setIsLoading(true);
+//       setError(null);
+//       try {
+//         const response = await fetch('http://localhost:3001/api/foods/preview'); // Your backend API endpoint
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: FoodData[] = await response.json(); // Type assertion
+//         setFoods(data);
+//       } catch (e) {
+//          console.error("Failed to fetch foods:", e);
+//          if (e instanceof Error) {
+//            setError(`Failed to load foods: ${e.message}`);
+//          } else {
+//            setError("Failed to load foods due to an unknown error.");
+//          }
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
 
-//   const handleOpenFilter = useCallback(() => {
-//     setOpenFilter(true);
-//   }, []);
+//     fetchFoods();
+//   }, []); // Empty dependency array means this runs once on mount
 
-//   const handleCloseFilter = useCallback(() => {
-//     setOpenFilter(false);
-//   }, []);
+//   if (isLoading) return <div>Loading...</div>;
+//   if (error) return <div>Error: {error}</div>;
 
-//   const handleSort = useCallback((newSort: string) => {
-//     setSortBy(newSort);
-//   }, []);
-
-//   const handleSetFilters = useCallback((updateState: Partial<FiltersProps>) => {
-//     setFilters((prevValue) => ({ ...prevValue, ...updateState }));
-//   }, []);
-
-//   const canReset = Object.keys(filters).some(
-//     (key) => filters[key as keyof FiltersProps] !== defaultFilters[key as keyof FiltersProps]
-//   );
+//   // ... rest of your component logic (filters, sorting, etc.)
 
 //   return (
 //     <DashboardContent>
-//       <CartIcon totalItems={8} />
-
-//       <Typography variant="h4" sx={{ mb: 5 }}>
-//         Food
-//       </Typography>
-//       <Box
-//         sx={{
-//           mb: 5,
-//           display: 'flex',
-//           alignItems: 'center',
-//           flexWrap: 'wrap-reverse',
-//           justifyContent: 'flex-end',
-//         }}
-//       >
-//         <Box
-//           sx={{
-//             my: 1,
-//             gap: 1,
-//             flexShrink: 0,
-//             display: 'flex',
-//           }}
-//         >
-//           <FoodFilters
-//             canReset={canReset}
-//             filters={filters}
-//             onSetFilters={handleSetFilters}
-//             openFilter={openFilter}
-//             onOpenFilter={handleOpenFilter}
-//             onCloseFilter={handleCloseFilter}
-//             onResetFilter={() => setFilters(defaultFilters)}
-//             options={{
-//               genders: GENDER_OPTIONS,
-//               categories: CATEGORY_OPTIONS,
-//               ratings: RATING_OPTIONS,
-//               price: PRICE_OPTIONS,
-//               colors: COLOR_OPTIONS,
-//             }}
-//           />
-
-//           <FoodSort
-//             sortBy={sortBy}
-//             onSort={handleSort}
-//             options={[
-//               { value: 'featured', label: 'Featured' },
-//               { value: 'newest', label: 'Newest' },
-//               { value: 'priceDesc', label: 'Price: High-Low' },
-//               { value: 'priceAsc', label: 'Price: Low-High' },
-//             ]}
-//           />
-//         </Box>
-//       </Box>
+//       {/* ... Header, Filters, Sort components ... */}
+//        <Typography variant="h4" sx={{ mb: 5 }}>
+//          Food
+//        </Typography>
+//       {/* ... Filters and Sort components ... */}
 
 //       <Grid container spacing={3}>
-//         {_food.map((food) => (
-//           <Grid key={food.id} size={{ xs: 12, sm: 6, md: 3 }}>
-//             <FoodItem food={food} />
-//           </Grid>
-//         ))}
+//          {/* Map over the fetched foods array */}
+//          {foods.length > 0 ? (
+//            foods.map((food) => (
+//              <Grid key={food.code} size={{ xs: 12, sm: 6, md: 3 }}>
+//                {/* Adapt FoodItemProps based on your FoodData interface */}
+//                <FoodItem food={{
+//                  id: food.code, // Assuming 'code' is the unique identifier
+//                  name: food.product_name || 'Unnamed Food', // Use product_name from DB
+//                  coverUrl: food.image_url || 'https://toppng.com/uploads/preview/clipart-free-seaweed-clipart-draw-food-placeholder-11562968708qhzooxrjly.png', // Use image_url or a default
+//                  nutrients: { // Map relevant nutrient data
+//                     energy: food.energy_kcal_100g,
+//                     proteins: food.proteins_100g,
+//                     carbohydrates: food.carbohydrates_100g,
+//                     fat: food.fat_100g,
+//                  }
+//                  // Map other necessary props for FoodItem
+//                }} />
+//              </Grid>
+//            ))
+//          ) : (
+//             <Typography sx={{ p: 3 }}>No food items found.</Typography>
+//          )}
 //       </Grid>
-
-//       <Pagination count={10} color="primary" sx={{ mt: 8, mx: 'auto' }} />
+//        {/* ... Pagination ... */}
 //     </DashboardContent>
 //   );
+// }
 
 export function FoodView() {
-  const [foods, setFoods] = useState<FoodData[]>([]); // Use the interface here
+  const [foods, setFoods] = useState<FoodData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ... other state like filters, sort, etc.
+  const [searchParams] = useSearchParams(); // 2. Get URL search params
+  const searchTerm = searchParams.get('search'); // 3. Get the 'search' param
 
   useEffect(() => {
     const fetchFoods = async () => {
       setIsLoading(true);
       setError(null);
+      
+      // 4. Conditionally set the URL
+      let url = 'http://localhost:3001/api/foods/preview'; // Default URL
+      let fetchErrorMsg = 'Failed to load foods';
+
+      if (searchTerm) {
+        url = `http://localhost:3001/api/foods/search?q=${encodeURIComponent(searchTerm)}`;
+        fetchErrorMsg = `Failed to find results for "${searchTerm}"`;
+      }
+
       try {
-        const response = await fetch('http://localhost:3001/api/foods/preview'); // Your backend API endpoint
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data: FoodData[] = await response.json(); // Type assertion
+        const data: FoodData[] = await response.json();
         setFoods(data);
       } catch (e) {
-         console.error("Failed to fetch foods:", e);
+         console.error(fetchErrorMsg, e);
          if (e instanceof Error) {
-           setError(`Failed to load foods: ${e.message}`);
+           setError(`${fetchErrorMsg}: ${e.message}`);
          } else {
-           setError("Failed to load foods due to an unknown error.");
+           setError(`${fetchErrorMsg} due to an unknown error.`);
          }
       } finally {
         setIsLoading(false);
@@ -196,47 +184,46 @@ export function FoodView() {
     };
 
     fetchFoods();
-  }, []); // Empty dependency array means this runs once on mount
+  }, [searchTerm]); // 5. Add searchTerm to dependency array. This re-runs the fetch when the URL changes!
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  // ... rest of your component logic (filters, sorting, etc.)
+  if (isLoading) return <DashboardContent><Typography>Loading...</Typography></DashboardContent>;
+  if (error) return <DashboardContent><Typography>Error: {error}</Typography></DashboardContent>;
 
   return (
     <DashboardContent>
-      {/* ... Header, Filters, Sort components ... */}
-       <Typography variant="h4" sx={{ mb: 5 }}>
-         Food
-       </Typography>
-      {/* ... Filters and Sort components ... */}
+      <Typography variant="h4" sx={{ mb: 5 }}>
+        {/* 6. Make the title dynamic */}
+        {searchTerm ? `Search Results for "${searchTerm}"` : 'Food'}
+      </Typography>
+
+      {/* You may want to hide filters/sort when showing search results */}
+      {/* <FoodSort /> */}
+      {/* <FoodFilters /> */}
 
       <Grid container spacing={3}>
-         {/* Map over the fetched foods array */}
          {foods.length > 0 ? (
            foods.map((food) => (
              <Grid key={food.code} size={{ xs: 12, sm: 6, md: 3 }}>
-               {/* Adapt FoodItemProps based on your FoodData interface */}
                <FoodItem food={{
-                 id: food.code, // Assuming 'code' is the unique identifier
-                 name: food.product_name || 'Unnamed Food', // Use product_name from DB
-                 coverUrl: food.image_url || 'https://toppng.com/uploads/preview/clipart-free-seaweed-clipart-draw-food-placeholder-11562968708qhzooxrjly.png', // Use image_url or a default
-                 nutrients: { // Map relevant nutrient data
-                    energy: food.energy_kcal_100g,
-                    proteins: food.proteins_100g,
-                    carbohydrates: food.carbohydrates_100g,
-                    fat: food.fat_100g,
-                 }
-                 // Map other necessary props for FoodItem
+                 id: food.code,
+                 name: food.product_name || 'Unnamed Food',
+                 coverUrl: food.image_url || 'https://toppng.com/uploads/preview/clipart-free-seaweed-clipart-draw-food-placeholder-11562968708qhzooxrjly.png',
+                 // 7. Handle missing nutrients (search doesn't return them)
+                 nutrients: {} 
                }} />
              </Grid>
            ))
          ) : (
-            <Typography sx={{ p: 3 }}>No food items found.</Typography>
+            // 8. Show a dynamic "no results" message
+            <Grid size={{ xs: 12 }}>
+              <Typography sx={{ p: 3, textAlign: 'center' }}>
+                {searchTerm ? 'No food items found matching your search.' : 'No food items found.'}
+              </Typography>
+            </Grid>
          )}
       </Grid>
-       {/* ... Pagination ... */}
+      
+      {/* <FoodCartWidget /> */}
     </DashboardContent>
   );
 }
-

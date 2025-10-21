@@ -15,7 +15,7 @@ const dbConfig = {
   port: 3306,
 };
 
-// --- NEW ENDPOINT 1: For your "Food Page" Grid ---
+// --- NEW ENDPOINT 1: For "Food Page" Grid ---
 // This route gives only 30 items with just name and image.
 app.get('/api/foods/preview', async (req, res) => {
   let connection;
@@ -24,7 +24,7 @@ app.get('/api/foods/preview', async (req, res) => {
     
     // Optimized query for the grid view
     const [rows] = await connection.execute(
-      'SELECT code, product_name, image_url FROM foodtbl LIMIT 20;'
+      'SELECT product_name, image_url FROM foodtbl LIMIT 20;'
     );
 
     res.json(rows);
@@ -36,7 +36,7 @@ app.get('/api/foods/preview', async (req, res) => {
   }
 });
 
-// --- NEW ENDPOINT 2: For your "Food Table" (replaces User page) ---
+// --- NEW ENDPOINT 2: "Food Table" (replaces User page) ---
 // This route gives ALL items with detailed info for the table.
 app.get('/api/foods/table', async (req, res) => {
   let connection;
@@ -57,10 +57,39 @@ app.get('/api/foods/table', async (req, res) => {
   }
 });
 
+// --- NEW ENDPOINT 3: Search Foods by Name ---
+app.get('/api/foods/search', async (req, res) => {
+  const searchTerm = req.query.q; // Get the search term from the query parameter 'q'
 
+  if (!searchTerm) {
+    return res.status(400).json({ error: 'Search term is required' });
+  }
+
+  let connection;
+  try {
+    connection = await mysql.createConnection(dbConfig);
+    
+    // Use a prepared statement to prevent SQL injection
+    // The '%' wildcards mean it will find any product_name containing the searchTerm
+    const query = 'SELECT product_name, image_url FROM foodtbl WHERE product_name LIKE ?;';
+    const [rows] = await connection.execute(query, [`%${searchTerm}%`]);
+
+    res.json(rows); // Send back the search results
+  } catch (error) {
+    console.error('Error searching food data:', error);
+    res.status(500).json({ error: 'Failed to search for data' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
+
+// Start the server
 app.listen(port, () => {
   console.log(`Backend server listening on port ${port}`);
   console.log('Available endpoints:');
   console.log('  GET http://localhost:3001/api/foods/preview  (30 items for grid)');
   console.log('  GET http://localhost:3001/api/foods/table    (All items for table)');
+  // Add this new line:
+  console.log('  GET http://localhost:3001/api/foods/search?q=... (Search results)');
 });
