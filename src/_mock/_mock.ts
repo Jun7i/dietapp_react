@@ -41,61 +41,15 @@ export const _price = (index: number) =>
     25.93, 70.39, 23.11, 67.23, 14.31, 31.5, 26.72, 44.8, 37.87, 75.53,
   ][index];
 
-export const _company = (index: number) =>
+export const _brand = (index: number) =>
   [
-    'Medhurst, Moore and Franey',
-    'Hahn, Homenick and Lind',
-    'Larkin LLC',
-    'Stamm, Larson and Mertz',
-    'Spencer, Raynor and Langosh',
-    'Lehner - Feeney',
-    'Leuschke, Harris and Kuhlman',
-    'Gutmann - Kassulke',
-    'Turcotte - Runolfsson',
-    'Howe - Anderson',
-    'Sipes - Yost',
-    'Johns - Aufderhar',
-    'Schmidt LLC',
-    'Smitham - Gerlach',
-    'Waelchi - VonRueden',
-    'Padberg - Macejkovic',
-    'Lemke - Ferry',
-    'Koch and Sons',
-    'Klein - Rolfson',
-    'Weimann LLC',
-    'White, Cassin and Goldner',
-    'Mohr, Langworth and Hills',
-    'Mitchell, Volkman and Prosacco',
-    'Streich Group',
-  ][index];
+    'World Food Products',
+  ][index] || `Brand ${index + 1}`;
 
-export const _boolean = (index: number) =>
+export const _category = (index: number) =>
   [
-    true,
-    false,
-    true,
-    false,
-    true,
-    true,
-    true,
-    false,
-    false,
-    true,
-    false,
-    true,
-    true,
-    false,
-    true,
-    false,
-    false,
-    true,
-    false,
-    false,
-    false,
-    true,
-    true,
-    false,
-  ][index];
+    'category 1',
+  ][index] || `Category ${index + 1}`; 
 
 
 // this is for food with cover

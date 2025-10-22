@@ -6,7 +6,6 @@ import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 
-import { _food } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { FoodItem } from '../food-item';
@@ -207,7 +206,7 @@ export function FoodView() {
                <FoodItem food={{
                  id: food.code,
                  name: food.product_name || 'Unnamed Food',
-                 coverUrl: food.image_url || 'https://toppng.com/uploads/preview/clipart-free-seaweed-clipart-draw-food-placeholder-11562968708qhzooxrjly.png',
+                 coverUrl: food.image_url || 'https://static.wixstatic.com/media/69e890_7ac3191467e244b3845421625a7f9e11~mv2.png/v1/fill/w_319,h_321,al_c,q_85,enc_auto/IMG_1596.png',
                  // 7. Handle missing nutrients (search doesn't return them)
                  nutrients: {} 
                }} />

@@ -24,14 +24,9 @@ export const navData = [
     icon: icon('ic-analytics'),
   },
   {
-    title: 'User',
+    title: 'Table',
     path: '/user',
     icon: icon('ic-user'),
-  },
-  {
-    title: 'Blog',
-    path: '/blog',
-    icon: icon('ic-blog'),
   },
   {
     title: 'Not found',

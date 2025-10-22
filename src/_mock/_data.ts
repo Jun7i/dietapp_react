@@ -2,43 +2,32 @@ import {
   _id,
   _price,
   _times,
-  _company,
-  _boolean,
+  _brand,
+  _category,
   _foodName,
   _foodNames,
 } from './_mock';
 
 // ----------------------------------------------------------------------
 
-
-
-// ----------------------------------------------------------------------
-
 export const _users = [...Array(24)].map((_, index) => ({
   id: _id(index),
   name: _foodName(index),
-  company: _company(index),
-  isVerified: _boolean(index),
-  avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
-  status: index % 4 ? 'active' : 'banned',
-  role:
+  brand: _brand(index),
+  categories: _category(index),
+  food_img: `https://static.wixstatic.com/media/69e890_7ac3191467e244b3845421625a7f9e11~mv2.png/v1/fill/w_319,h_321,al_c,q_85,enc_auto/IMG_1596.png`,
+  score: [
+      'Score A',
+    ][index] || 'unknown',
+  pnns:
     [
-      'Leader',
-      'Hr Manager',
-      'UI Designer',
-      'UX Designer',
-      'UI/UX Designer',
-      'Project Manager',
-      'Backend Developer',
-      'Full Stack Designer',
-      'Front End Developer',
-      'Full Stack Developer',
-    ][index] || 'UI Designer',
+      'Fruits and vegetables',
+      'Sugary snacks',
+    ][index] || 'unknown',
 }));
 
 // ----------------------------------------------------------------------
 
-// ----------------------------------------------------------------------
 
 const COLORS = [
   '#00AB55',
@@ -50,29 +39,3 @@ const COLORS = [
   '#94D82D',
   '#FFC107',
 ];
-
-export const _food = [...Array(24)].map((_, index) => {
-  const setIndex = index + 1;
-
-  return {
-    id: _id(index),
-    price: _price(index),
-    name: _foodNames(index),
-    priceSale: setIndex % 3 ? null : _price(index),
-    coverUrl: `https://toppng.com/uploads/preview/clipart-free-seaweed-clipart-draw-food-placeholder-11562968708qhzooxrjly.png`, // food covers
-    colors:
-      (setIndex === 1 && COLORS.slice(0, 2)) ||
-      (setIndex === 2 && COLORS.slice(1, 3)) ||
-      (setIndex === 3 && COLORS.slice(2, 4)) ||
-      (setIndex === 4 && COLORS.slice(3, 6)) ||
-      (setIndex === 23 && COLORS.slice(4, 6)) ||
-      (setIndex === 24 && COLORS.slice(5, 6)) ||
-      COLORS,
-    status:
-      ([1, 3, 5].includes(setIndex) && 'sale') || ([4, 8, 12].includes(setIndex) && 'new') || '',
-  };
-});
-
-// ----------------------------------------------------------------------
-
-

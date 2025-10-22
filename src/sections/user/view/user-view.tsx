@@ -41,24 +41,7 @@ export function UserView() {
 
   return (
     <DashboardContent>
-      <Box
-        sx={{
-          mb: 5,
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          Users
-        </Typography>
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          New user
-        </Button>
-      </Box>
+
 
       <Card>
         <UserTableToolbar
@@ -87,10 +70,10 @@ export function UserView() {
                 }
                 headLabel={[
                   { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'brand', label: 'Brand' },
+                  { id: 'pnns', label: 'PNNS' },
+                  { id: 'categories', label: 'categories', align: 'center' },
+                  { id: 'score', label: 'Nutri-Score' },
                   { id: '' },
                 ]}
               />

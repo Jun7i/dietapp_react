@@ -1,3 +1,6 @@
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
@@ -13,9 +16,84 @@ import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
+// import {
+//   // ... (keep other imports)
+//   AnalyticsCurrentVisits,
+//   // ... (keep other imports)
+// } from 'src/sections/overview';
+
 // ----------------------------------------------------------------------
 
+type PieChartData = {
+  label: string;
+  value: number;
+};
+
+type FetchedFoodData = {
+  product_name: string;
+  proteins_100g: number;
+  carbohydrates_100g: number;
+  fat_100g: number;
+};
+
+const DEFAULT_PIE_DATA = [
+  { label: 'pie 1', value: 3500 },
+  { label: 'pie 2', value: 2500 },
+  { label: 'pie 3', value: 1500 },
+  { label: 'pie 4', value: 500 },
+];
+
+// ----------------------------------------------------------------------
 export function OverviewAnalyticsView() {
+  const [searchParams] = useSearchParams();
+  const foodCode = searchParams.get('food');
+
+  // 5. Create state for our dynamic chart data and title
+  const [pieData, setPieData] = useState<PieChartData[]>(DEFAULT_PIE_DATA);
+  const [pieTitle, setPieTitle] = useState('Nutrition Sources');
+  const [welcomeName, setWelcomeName] = useState('User'); // State for the "Hi, Welcome back"
+  useEffect(() => {
+    const fetchFoodDetails = async () => {
+      if (!foodCode) {
+        // No food code in URL, reset to default
+        setPieData(DEFAULT_PIE_DATA);
+        setPieTitle('Nutrition Sources');
+        setWelcomeName('User'); // Reset welcome message
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3001/api/food/${foodCode}`);
+        if (!response.ok) {
+          throw new Error('Food not found');
+        }
+        const data: FetchedFoodData = await response.json();
+
+        // Process data for the pie chart
+        const processedData = [
+          { label: 'Protein (g)', value: data.proteins_100g || 0 },
+          { label: 'Carbs (g)', value: data.carbohydrates_100g || 0 },
+          { label: 'Fat (g)', value: data.fat_100g || 0 },
+        ];
+        
+        // Filter out any 0-value nutrients for a cleaner chart
+        const finalData = processedData.filter(item => item.value > 0);
+
+        setPieData(finalData.length > 0 ? finalData : [{ label: 'No Data', value: 1 }]);
+        setPieTitle(`Macronutrients for ${data.product_name}`);
+        setWelcomeName(data.product_name); // Update welcome message
+      } catch (error) {
+        console.error("Failed to fetch food details:", error);
+        // On error, reset to default
+        setPieData(DEFAULT_PIE_DATA);
+        setPieTitle('Could not load nutrition data');
+        setWelcomeName('User');
+      }
+    };
+
+    fetchFoodDetails();
+  }, [foodCode]); // This dependency array is key!
+  
   return (
     <DashboardContent maxWidth="xl">
 
@@ -35,7 +113,7 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="New users"
+            title="New food product"
             percent={-0.1}
             total={1352831}
             color="secondary"
@@ -74,8 +152,8 @@ export function OverviewAnalyticsView() {
             }}
           />
         </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        
+        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentVisits
             title="Nutrition Sources"
             chart={{
@@ -85,6 +163,15 @@ export function OverviewAnalyticsView() {
                 { label: 'pie 3', value: 1500 },
                 { label: 'pie 4', value: 500 },
               ],
+            }}
+          />
+        </Grid> */}
+
+        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <AnalyticsCurrentVisits
+            title={pieTitle} // Use state for title
+            chart={{
+              series: pieData, // Use state for chart data
             }}
           />
         </Grid>
