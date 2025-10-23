@@ -42,6 +42,7 @@ This web application allows users to browse, search, and view nutritional inform
 * Pandas
 * Numpy
 * matplotlib
+* sqlalchemy
 
 ## Data Source
 
