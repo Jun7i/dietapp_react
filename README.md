@@ -24,6 +24,8 @@ This web application allows users to browse, search, and view nutritional inform
 * Material UI (using Minimal UI template)
 * React Router
 * Fetch API (for backend communication)
+<img width="2512" height="1105" alt="image" src="https://github.com/user-attachments/assets/15c712c6-874f-431e-be55-0507187c083f" />
+<img width="2517" height="1080" alt="image" src="https://github.com/user-attachments/assets/c52d0917-97d3-4d5a-bbef-c11ab9142199" />
 
 **Backend:**
 
