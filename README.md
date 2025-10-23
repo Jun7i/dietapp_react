@@ -26,6 +26,8 @@ This web application allows users to browse, search, and view nutritional inform
 * Fetch API (for backend communication)
 <img width="2512" height="1105" alt="image" src="https://github.com/user-attachments/assets/15c712c6-874f-431e-be55-0507187c083f" />
 <img width="2517" height="1080" alt="image" src="https://github.com/user-attachments/assets/c52d0917-97d3-4d5a-bbef-c11ab9142199" />
+<img width="2532" height="1079" alt="image" src="https://github.com/user-attachments/assets/d470e033-1941-4030-a788-2e27b04d4056" />
+
 
 **Backend:**
 
