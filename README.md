@@ -40,6 +40,8 @@ This web application allows users to browse, search, and view nutritional inform
 
 * Python (Jupyter Notebook)
 * Pandas
+* Numpy
+* matplotlib
 
 ## Data Source
 
