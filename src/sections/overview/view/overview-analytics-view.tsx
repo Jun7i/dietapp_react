@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { data, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import { Box } from '@mui/material';
+import { varAlpha } from 'minimal-shared/utils';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
@@ -16,6 +19,12 @@ import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
+// import {
+//   // ... (keep other imports)
+//   AnalyticsCurrentVisits,
+//   // ... (keep other imports)
+// } from 'src/sections/overview';
+
 // ----------------------------------------------------------------------
 
 type PieChartData = {
@@ -25,10 +34,21 @@ type PieChartData = {
 
 type FetchedFoodData = {
   product_name: string;
-  proteins_100g: number;
-  carbohydrates_100g: number;
-  fat_100g: number;
-  energy_100g: number;
+  brands: string | null;
+  image_url: string | null;
+  energy_100g: number | null;
+  nutriscore_score: number | null;
+  proteins_100g: number | null;
+  carbohydrates_100g: number | null;
+  fat_100g: number | null;
+  sugars_100g: number | null;
+  fiber_100g: number | null;
+  sodium_100g: number | null;
+  salt_100g: number | null;
+  calcium_100g: number | null;
+  iron_100g: number | null;
+  vitamin_c_100g: number | null;
+  vitamin_a_100g: number | null;
 };
 
 const DEFAULT_PIE_DATA = [
@@ -47,6 +67,10 @@ export function OverviewAnalyticsView() {
   const [pieData, setPieData] = useState<PieChartData[]>(DEFAULT_PIE_DATA);
   const [pieTitle, setPieTitle] = useState('Nutrition Sources');
   const [welcomeName, setWelcomeName] = useState('User'); // State for the "Hi, Welcome back"
+
+  const [foodDetails, setFoodDetails] = useState<FetchedFoodData | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [error, setError] = useState<string | null>(null); // Add error state
   useEffect(() => {
     const fetchFoodDetails = async () => {
       if (!foodCode) {
@@ -54,22 +78,26 @@ export function OverviewAnalyticsView() {
         setPieData(DEFAULT_PIE_DATA);
         setPieTitle('Nutrition Sources');
         setWelcomeName('User'); // Reset welcome message
+        setFoodDetails(null); // Reset food details
+        setIsLoading(false);
+        setError(null);
         return;
       }
-
+      setIsLoading(true); // Start loading
+      setError(null);
+      setFoodDetails(null);
       try {
         const response = await fetch(`http://localhost:3001/api/food/${foodCode}`);
         if (!response.ok) {
           throw new Error('Food not found');
         }
         const data: FetchedFoodData = await response.json();
-
+        setFoodDetails(data);
         // Process data for the pie chart
         const processedData = [
           { label: 'Protein (g)', value: data.proteins_100g || 0 },
           { label: 'Carbs (g)', value: data.carbohydrates_100g || 0 },
           { label: 'Fat (g)', value: data.fat_100g || 0 },
-          // { label: 'Calories', value: data.energy_kcal_100g || 0 },
         ];
         
         // Filter out any 0-value nutrients for a cleaner chart
@@ -78,60 +106,94 @@ export function OverviewAnalyticsView() {
         setPieData(finalData.length > 0 ? finalData : [{ label: 'No Data', value: 1 }]);
         setPieTitle(`Macronutrients for ${data.product_name}`);
         setWelcomeName(data.product_name); // Update welcome message
+        
       } catch (error) {
         console.error("Failed to fetch food details:", error);
         // On error, reset to default
         setPieData(DEFAULT_PIE_DATA);
         setPieTitle('Could not load nutrition data');
         setWelcomeName('User');
+        setFoodDetails(null);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchFoodDetails();
   }, [foodCode]); // This dependency array is key!
-  
+  if (isLoading) {
+    return <Typography sx={{ p: 3 }}>Loading food details...</Typography>;
+  }
+
+  if (error && foodCode) { // Only show error if we were trying to load a specific food
+     return <Typography sx={{ p: 3, color: 'error.main' }}>Error: {error}</Typography>;
+  }
+  if (!foodCode || !foodDetails) {
+     return (
+       <>
+         <Typography variant="h4" sx={{ mb: 5 }}>
+           Hi, Welcome back 👋
+         </Typography>
+         <Typography sx={{ mb: 5 }}>
+           Click on a food item from the Food page to see its details here.
+         </Typography>
+         {/* Optionally, display default summary widgets or charts here */}
+       </>
+     );
+   }
+
   return (
     <DashboardContent maxWidth="xl">
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Calories (per 100g)"
-            percent={2.6}
-            total={100000} // need to fetch real calorie data energy_kcal_100g
-            icon={<img alt="Weekly sales" src="/assets/icons/glass/ic-glass-bag.svg" />}
-            // chart={{
-            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-            //   series: [22, 8, 35, 50, 82, 84, 77, 12],
-            // }}
-          />
+          
+          <Card sx={{ p: 3, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center',
+            backgroundColor: 'common.white',
+            height: '100%' }}>
+              {foodDetails.image_url && (
+                  <Box
+                      component="img"
+                      src={foodDetails.image_url}
+                      alt={foodDetails.product_name}
+                      sx={{ width: 'auto', maxHeight: 90, mb: 2, borderRadius: 1 }}
+                  />
+              )}
+              <Typography variant="h6">{foodDetails.product_name}</Typography>
+              {/* You could add more details here */}
+            </Card>
         </Grid>
+
+        
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="Nutriscore"
             percent={-0.1}
-            total={1352831} // need to fetch real nutriscore data nutriscore_score
+            total={foodDetails.nutriscore_score ?? 0}
             color="secondary"
             icon={<img alt="New users" src="/assets/icons/glass/ic-glass-users.svg" />}
-            // chart={{
-            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-            //   series: [56, 47, 40, 62, 73, 30, 23, 54],
-            // }}
+            chart={{
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [56, 47, 40, 62, 73, 30, 23, 54],
+            }}
           />
         </Grid>
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Total Sugars (per 100g)"
+            title="Sugars (per 100g)"
             percent={2.8}
-            total={1723315} // need to fetch real sugar data sugars_100g
+            total={foodDetails.sugars_100g ?? 0}
             color="warning"
             icon={<img alt="Purchase orders" src="/assets/icons/glass/ic-glass-buy.svg" />}
-            // chart={{
-            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-            //   series: [40, 70, 50, 28, 70, 75, 7, 64],
-            // }}
+            chart={{
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [40, 70, 50, 28, 70, 75, 7, 64],
+            }}
           />
         </Grid>
 
@@ -139,13 +201,13 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="Salt (per 100g)"
             percent={3.6}
-            total={234} // need to fetch real salt data salt_100g
+            total={foodDetails.salt_100g ?? 0}
             color="error"
             icon={<img alt="Messages" src="/assets/icons/glass/ic-glass-message.svg" />}
-            // chart={{
-            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-            //   series: [56, 30, 23, 54, 47, 40, 62, 73],
-            // }}
+            chart={{
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [56, 30, 23, 54, 47, 40, 62, 73],
+            }}
           />
         </Grid>
         
@@ -165,7 +227,7 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentVisits
-            title={pieTitle} // Use state for title
+            title=' Pie Chart' // Use state for title
             chart={{
               series: pieData, // Use state for chart data
             }}
@@ -177,9 +239,16 @@ export function OverviewAnalyticsView() {
             title="Detailed Nutrient Profile (per 100g)"
             // subheader="(+43%) than last year"
             chart={{
-              categories: ['Saturated Fat', 'Fiber', 'Calcium', 'Iron', 'Vitamin C'], 
+              categories: ['Sodium', 'Fiber', 'Calcium', 'Iron', 'Vitamin C', 'Vitamin A'],
               series: [
-                { name: 'Team A', data: [43, 33, 22, 37, 67,] }, // need to fetch saturated-fat_100g, fiber_100g, calcium_100g, iron_100g, vitamin-c_100g
+                { name: 'Team A', 
+                  data: [
+                    foodDetails.sodium_100g ?? 0, 
+                    foodDetails.fiber_100g ?? 0, 
+                    foodDetails.calcium_100g ?? 0, 
+                    foodDetails.iron_100g ?? 0, 
+                    foodDetails.vitamin_c_100g ?? 0,
+                    foodDetails.vitamin_a_100g ?? 0] },
               ],
             }}
           />
@@ -198,8 +267,8 @@ export function OverviewAnalyticsView() {
             }}
           />
         </Grid> */}
-{/* 
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+
+        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentSubject
             title="Current subject"
             chart={{

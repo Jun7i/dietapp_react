@@ -33,7 +33,6 @@ interface FetchedFoodData {
   brands: string | null;
   image_url: string | null;
   categories: string | null;
-  calories: string | null; // New field for calories
 }
 // ----------------------------------------------------------------------
 

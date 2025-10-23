@@ -120,28 +120,7 @@ app.get('/api/food/:code', async (req, res) => {
     connection = await mysql.createConnection(dbConfig);
     
     // Query for the specific nutrients we need for the pie chart
-    const query = `
-      SELECT 
-          product_name, 
-          brands,
-          image_url,
-          energy_kcal_100g, 
-          nutriscore_score, 
-          proteins_100g, 
-          carbohydrates_100g, 
-          fat_100g,
-          sugars_100g,
-          fiber_100g,
-          saturated_fat_100g,
-          salt_100g,
-          calcium_100g,
-          iron_100g,
-          vitamin_c_100g
-      FROM 
-          foodtbl 
-      WHERE 
-          code = ?;
-    `;
+    const query = `SELECT * FROM foodtbl WHERE code = ?;`;
     const [rows] = await connection.execute(query, [code]);
 
     if (rows.length === 0) {
