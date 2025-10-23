@@ -48,15 +48,29 @@ app.get('/api/foods/preview', async (req, res) => {
 
 // --- NEW ENDPOINT 2: "Food Table" (replaces User page) ---
 // This route gives ALL items with detailed info for the table.
+// ... (keep all your existing code and other endpoints)
+
+// --- Find ENDPOINT 2: For your "Food Table" ---
 app.get('/api/foods/table', async (req, res) => {
   let connection;
   try {
     connection = await mysql.createConnection(dbConfig);
     
-    // Query for all data. Add/remove columns as you need.
-    const [rows] = await connection.execute(
-      'SELECT code, product_name, image_url, brands, categories, energy_kcal_100g, proteins_100g, carbohydrates_100g, fat_100g, salt_100g, sugars_100g FROM foodtbl limit 10;'
-    );
+    // ADJUST THIS QUERY to match UserProps
+    const query = `
+      SELECT 
+        code,             -- For 'id'
+        product_name,     -- For 'name'
+        pnns_groups_1,    -- For 'pnns'
+        nutriscore_score, -- For 'score'
+        brands,           -- For 'brand'
+        image_url,        -- For 'food_img'
+        categories        -- For 'categories'
+      FROM foodtbl;
+    `; 
+    // Add ORDER BY or LIMIT here if needed in the future
+
+    const [rows] = await connection.execute(query);
 
     res.json(rows);
   } catch (error) {
@@ -66,6 +80,8 @@ app.get('/api/foods/table', async (req, res) => {
     if (connection) await connection.end();
   }
 });
+
+// ... (keep the rest of the file)
 
 // --- NEW ENDPOINT 3: Search Foods by Name ---
 app.get('/api/foods/search', async (req, res) => {

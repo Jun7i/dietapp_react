@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -24,24 +24,70 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 
 import type { UserProps } from '../user-table-row';
 
+
+interface FetchedFoodData {
+  code: string;
+  product_name: string;
+  pnns_groups_1: string | null; // Handle potential nulls from DB
+  nutriscore_score: number | string | null; // Handle potential nulls/different types
+  brands: string | null;
+  image_url: string | null;
+  categories: string | null;
+}
 // ----------------------------------------------------------------------
 
 export function UserView() {
-  const table = useTable();
 
+  const table = useTable();
+  const [tableData, setTableData] = useState<FetchedFoodData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTableData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('http://localhost:3001/api/foods/table'); // Point to your table endpoint
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: FetchedFoodData[] = await response.json();
+        setTableData(data);
+      } catch (e) {
+         console.error("Failed to fetch food table data:", e);
+         if (e instanceof Error) {
+           setError(`Failed to load data: ${e.message}`);
+         } else {
+           setError("Failed to load data due to an unknown error.");
+         }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTableData();
+  }, []); // Empty dependency array means this runs once
+  
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
-    comparator: getComparator(table.order, table.orderBy),
-    filterName,
-  });
+  // const dataFiltered: UserProps[] = applyFilter({
+  //   inputData: _users,
+  //   comparator: getComparator(table.order, table.orderBy),
+  //   filterName,
+  // });
+  const dataFiltered = tableData; // Just use the fetched data directly
 
   const notFound = !dataFiltered.length && !!filterName;
-
+  
+  if (isLoading) {
+    return <DashboardContent><Typography>Loading table data...</Typography></DashboardContent>;
+  }
+  if (error) {
+     return <DashboardContent><Typography>Error: {error}</Typography></DashboardContent>;
+  }
   return (
     <DashboardContent>
-
 
       <Card>
         <UserTableToolbar
@@ -68,13 +114,13 @@ export function UserView() {
                     _users.map((user) => user.id)
                   )
                 }
-                headLabel={[
+                headLabel={[ // 8. Update Head Labels
                   { id: 'name', label: 'Name' },
+                  { id: 'pnns', label: 'PNNS Group' },
+                  { id: 'score', label: 'NutriScore' },
                   { id: 'brand', label: 'Brand' },
-                  { id: 'pnns', label: 'PNNS' },
-                  { id: 'categories', label: 'categories', align: 'center' },
-                  { id: 'score', label: 'Nutri-Score' },
-                  { id: '' },
+                  { id: 'categories', label: 'Categories' },
+                  { id: '' }, // Keep for the menu button column
                 ]}
               />
               <TableBody>
@@ -85,17 +131,25 @@ export function UserView() {
                   )
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
-                      row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                      key={row.code}
+                      row={{
+                        code: row.code,
+                        name: row.product_name || 'N/A',
+                        pnns: row.pnns_groups_1 || 'N/A',
+                        score: String(row.nutriscore_score ?? 'N/A'), // Ensure it's a string
+                        brand: row.brands || 'N/A',
+                        food_img: row.image_url || '', // Use image_url, provide default if needed
+                        categories: row.categories || 'N/A',
+                      }}
+                      selected={table.selected.includes(row.code)}
+                      onSelectRow={() => table.onSelectRow(row.code)}
                     />
                   ))}
-
+{/* 
                 <TableEmptyRows
                   height={68}
                   emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
-                />
+                /> */}
 
                 {notFound && <TableNoData searchQuery={filterName} />}
               </TableBody>
@@ -106,7 +160,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={tableData.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
