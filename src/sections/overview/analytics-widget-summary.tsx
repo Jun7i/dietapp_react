@@ -14,7 +14,7 @@ import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
 import { Chart, useChart } from 'src/components/chart';
 
-// ----------------------------------------------------------------------
+// ---------------------------------------------------------------------- need to use energy info from sql
 
 type Props = CardProps & {
   title: string;
@@ -22,11 +22,11 @@ type Props = CardProps & {
   percent: number;
   color?: PaletteColorKey;
   icon: React.ReactNode;
-  chart: {
-    series: number[];
-    categories: string[];
-    options?: ChartOptions;
-  };
+  // chart: {
+  //   series: number[];
+  //   categories: string[];
+  //   options?: ChartOptions;
+  // };
 };
 
 export function AnalyticsWidgetSummary({
@@ -34,7 +34,7 @@ export function AnalyticsWidgetSummary({
   icon,
   title,
   total,
-  chart,
+  // chart,
   percent,
   color = 'primary',
   ...other
@@ -43,26 +43,26 @@ export function AnalyticsWidgetSummary({
 
   const chartColors = [theme.palette[color].dark];
 
-  const chartOptions = useChart({
-    chart: { sparkline: { enabled: true } },
-    colors: chartColors,
-    xaxis: { categories: chart.categories },
-    grid: {
-      padding: {
-        top: 6,
-        left: 6,
-        right: 6,
-        bottom: 6,
-      },
-    },
-    tooltip: {
-      y: { formatter: (value: number) => fNumber(value), title: { formatter: () => '' } },
-    },
-    markers: {
-      strokeWidth: 0,
-    },
-    ...chart.options,
-  });
+  // const chartOptions = useChart({
+  //   chart: { sparkline: { enabled: true } },
+  //   colors: chartColors,
+  //   xaxis: { categories: chart.categories },
+  //   grid: {
+  //     padding: {
+  //       top: 6,
+  //       left: 6,
+  //       right: 6,
+  //       bottom: 6,
+  //     },
+  //   },
+  //   tooltip: {
+  //     y: { formatter: (value: number) => fNumber(value), title: { formatter: () => '' } },
+  //   },
+  //   markers: {
+  //     strokeWidth: 0,
+  //   },
+  //   // ...chart.options,
+  // });
 
   const renderTrending = () => (
     <Box
@@ -116,12 +116,12 @@ export function AnalyticsWidgetSummary({
           <Box sx={{ typography: 'h4' }}>{fShortenNumber(total)}</Box>
         </Box>
 
-        <Chart
+        {/* <Chart
           type="line"
           series={[{ data: chart.series }]}
           options={chartOptions}
           sx={{ width: 84, height: 56 }}
-        />
+        /> */}
       </Box>
 
       <SvgColor

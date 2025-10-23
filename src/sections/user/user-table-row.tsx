@@ -1,16 +1,16 @@
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Checkbox from '@mui/material/Checkbox';
+import TableCell from '@mui/material/TableCell';
+import MenuList from '@mui/material/MenuList';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import Checkbox from '@mui/material/Checkbox';
-import MenuList from '@mui/material/MenuList';
-import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
-import Stack from '@mui/material/Stack'; // Added for layout
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
@@ -52,19 +52,6 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
 
-        {/* <TableCell component="th" scope="row">
-          <Box
-            sx={{
-              gap: 2,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar alt={row.name} src={row.food_img} />
-            {row.name}
-          </Box>
-        </TableCell> */}
-        {/* Name and Image */}
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar alt={name} src={food_img} variant="rounded" sx={{ width: 48, height: 48, mr: 1 }}/> {/* Display image */}
@@ -74,16 +61,6 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </Stack>
         </TableCell>
 
-        {/* <TableCell>{row.brand}</TableCell>
-
-        <TableCell>{row.pnns}</TableCell>
-
-        <TableCell align="center">
-          {row.categories}
-        </TableCell>
-        <TableCell>
-          {row.score}
-        </TableCell> */}
         <TableCell>{pnns}</TableCell>
         <TableCell>{score}</TableCell>
         <TableCell>{brand}</TableCell>

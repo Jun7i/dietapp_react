@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
+import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
 import { DashboardContent } from 'src/layouts/dashboard';
@@ -66,80 +67,6 @@ interface FoodData {
   // Note: nutrients will be missing from search, we handle this below
 }
 
-// export function FoodView() {
-//   const [foods, setFoods] = useState<FoodData[]>([]); // Use the interface here
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   // ... other state like filters, sort, etc.
-
-//   useEffect(() => {
-//     const fetchFoods = async () => {
-//       setIsLoading(true);
-//       setError(null);
-//       try {
-//         const response = await fetch('http://localhost:3001/api/foods/preview'); // Your backend API endpoint
-//         if (!response.ok) {
-//           throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//         const data: FoodData[] = await response.json(); // Type assertion
-//         setFoods(data);
-//       } catch (e) {
-//          console.error("Failed to fetch foods:", e);
-//          if (e instanceof Error) {
-//            setError(`Failed to load foods: ${e.message}`);
-//          } else {
-//            setError("Failed to load foods due to an unknown error.");
-//          }
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     fetchFoods();
-//   }, []); // Empty dependency array means this runs once on mount
-
-//   if (isLoading) return <div>Loading...</div>;
-//   if (error) return <div>Error: {error}</div>;
-
-//   // ... rest of your component logic (filters, sorting, etc.)
-
-//   return (
-//     <DashboardContent>
-//       {/* ... Header, Filters, Sort components ... */}
-//        <Typography variant="h4" sx={{ mb: 5 }}>
-//          Food
-//        </Typography>
-//       {/* ... Filters and Sort components ... */}
-
-//       <Grid container spacing={3}>
-//          {/* Map over the fetched foods array */}
-//          {foods.length > 0 ? (
-//            foods.map((food) => (
-//              <Grid key={food.code} size={{ xs: 12, sm: 6, md: 3 }}>
-//                {/* Adapt FoodItemProps based on your FoodData interface */}
-//                <FoodItem food={{
-//                  id: food.code, // Assuming 'code' is the unique identifier
-//                  name: food.product_name || 'Unnamed Food', // Use product_name from DB
-//                  coverUrl: food.image_url || 'https://toppng.com/uploads/preview/clipart-free-seaweed-clipart-draw-food-placeholder-11562968708qhzooxrjly.png', // Use image_url or a default
-//                  nutrients: { // Map relevant nutrient data
-//                     energy: food.energy_kcal_100g,
-//                     proteins: food.proteins_100g,
-//                     carbohydrates: food.carbohydrates_100g,
-//                     fat: food.fat_100g,
-//                  }
-//                  // Map other necessary props for FoodItem
-//                }} />
-//              </Grid>
-//            ))
-//          ) : (
-//             <Typography sx={{ p: 3 }}>No food items found.</Typography>
-//          )}
-//       </Grid>
-//        {/* ... Pagination ... */}
-//     </DashboardContent>
-//   );
-// }
 
 export function FoodView() {
   const [foods, setFoods] = useState<FoodData[]>([]);
@@ -185,7 +112,10 @@ export function FoodView() {
     fetchFoods();
   }, [searchTerm]); // 5. Add searchTerm to dependency array. This re-runs the fetch when the URL changes!
 
-  if (isLoading) return <DashboardContent><Typography>Loading...</Typography></DashboardContent>;
+  // if (isLoading) return <DashboardContent><Typography>Loading...</Typography></DashboardContent>;
+  if (isLoading) return <DashboardContent><Box sx={{ display: 'flex' }}>
+      <CircularProgress />
+    </Box></DashboardContent>;
   if (error) return <DashboardContent><Typography>Error: {error}</Typography></DashboardContent>;
 
   return (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { data, useSearchParams } from 'react-router-dom';
 
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -16,12 +16,6 @@ import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
-// import {
-//   // ... (keep other imports)
-//   AnalyticsCurrentVisits,
-//   // ... (keep other imports)
-// } from 'src/sections/overview';
-
 // ----------------------------------------------------------------------
 
 type PieChartData = {
@@ -34,6 +28,7 @@ type FetchedFoodData = {
   proteins_100g: number;
   carbohydrates_100g: number;
   fat_100g: number;
+  energy_100g: number;
 };
 
 const DEFAULT_PIE_DATA = [
@@ -74,6 +69,7 @@ export function OverviewAnalyticsView() {
           { label: 'Protein (g)', value: data.proteins_100g || 0 },
           { label: 'Carbs (g)', value: data.carbohydrates_100g || 0 },
           { label: 'Fat (g)', value: data.fat_100g || 0 },
+          // { label: 'Calories', value: data.energy_kcal_100g || 0 },
         ];
         
         // Filter out any 0-value nutrients for a cleaner chart
@@ -100,56 +96,56 @@ export function OverviewAnalyticsView() {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Weekly sales"
+            title="Calories (per 100g)"
             percent={2.6}
-            total={714000}
+            total={100000} // need to fetch real calorie data energy_kcal_100g
             icon={<img alt="Weekly sales" src="/assets/icons/glass/ic-glass-bag.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [22, 8, 35, 50, 82, 84, 77, 12],
-            }}
+            // chart={{
+            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+            //   series: [22, 8, 35, 50, 82, 84, 77, 12],
+            // }}
           />
         </Grid>
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="New food product"
+            title="Nutriscore"
             percent={-0.1}
-            total={1352831}
+            total={1352831} // need to fetch real nutriscore data nutriscore_score
             color="secondary"
             icon={<img alt="New users" src="/assets/icons/glass/ic-glass-users.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 47, 40, 62, 73, 30, 23, 54],
-            }}
+            // chart={{
+            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+            //   series: [56, 47, 40, 62, 73, 30, 23, 54],
+            // }}
           />
         </Grid>
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Purchase orders"
+            title="Total Sugars (per 100g)"
             percent={2.8}
-            total={1723315}
+            total={1723315} // need to fetch real sugar data sugars_100g
             color="warning"
             icon={<img alt="Purchase orders" src="/assets/icons/glass/ic-glass-buy.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [40, 70, 50, 28, 70, 75, 7, 64],
-            }}
+            // chart={{
+            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+            //   series: [40, 70, 50, 28, 70, 75, 7, 64],
+            // }}
           />
         </Grid>
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Messages"
+            title="Salt (per 100g)"
             percent={3.6}
-            total={234}
+            total={234} // need to fetch real salt data salt_100g
             color="error"
             icon={<img alt="Messages" src="/assets/icons/glass/ic-glass-message.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 30, 23, 54, 47, 40, 62, 73],
-            }}
+            // chart={{
+            //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+            //   series: [56, 30, 23, 54, 47, 40, 62, 73],
+            // }}
           />
         </Grid>
         
@@ -178,19 +174,18 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AnalyticsWebsiteVisits
-            title="Website visits"
-            subheader="(+43%) than last year"
+            title="Detailed Nutrient Profile (per 100g)"
+            // subheader="(+43%) than last year"
             chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+              categories: ['Saturated Fat', 'Fiber', 'Calcium', 'Iron', 'Vitamin C'], 
               series: [
-                { name: 'Team A', data: [43, 33, 22, 37, 67, 68, 37, 24, 55] },
-                { name: 'Team B', data: [51, 70, 47, 67, 40, 37, 24, 70, 24] },
+                { name: 'Team A', data: [43, 33, 22, 37, 67,] }, // need to fetch saturated-fat_100g, fiber_100g, calcium_100g, iron_100g, vitamin-c_100g
               ],
             }}
           />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
+        {/* <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AnalyticsConversionRates
             title="Conversion rates"
             subheader="(+43%) than last year"
@@ -202,8 +197,8 @@ export function OverviewAnalyticsView() {
               ],
             }}
           />
-        </Grid>
-
+        </Grid> */}
+{/* 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentSubject
             title="Current subject"
@@ -216,7 +211,7 @@ export function OverviewAnalyticsView() {
               ],
             }}
           />
-        </Grid>
+        </Grid> */}
 
 
       </Grid>
