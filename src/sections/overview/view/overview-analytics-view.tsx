@@ -175,7 +175,7 @@ export function OverviewAnalyticsView() {
             percent={-0.1}
             total={foodDetails.nutriscore_score ?? 0}
             color="secondary"
-            icon={<img alt="New users" src="/assets/icons/glass/ic-glass-users.svg" />}
+            icon={<img alt="Nutri Score" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Nutri-score-A.svg/360px-Nutri-score-A.svg.png?20170815140554" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
               series: [56, 47, 40, 62, 73, 30, 23, 54],
@@ -199,9 +199,9 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Salt (per 100g)"
+            title="Calories (per 100g)"
             percent={3.6}
-            total={foodDetails.salt_100g ?? 0}
+            total={foodDetails.energy_100g ?? 0}
             color="error"
             icon={<img alt="Messages" src="/assets/icons/glass/ic-glass-message.svg" />}
             chart={{
@@ -211,19 +211,6 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
         
-        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsCurrentVisits
-            title="Nutrition Sources"
-            chart={{
-              series: [
-                { label: 'pie 1', value: 3500 },
-                { label: 'pie 2', value: 2500 },
-                { label: 'pie 3', value: 1500 },
-                { label: 'pie 4', value: 500 },
-              ],
-            }}
-          />
-        </Grid> */}
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentVisits
@@ -239,7 +226,7 @@ export function OverviewAnalyticsView() {
             title="Detailed Nutrient Profile (per 100g)"
             // subheader="(+43%) than last year"
             chart={{
-              categories: ['Sodium', 'Fiber', 'Calcium', 'Iron', 'Vitamin C', 'Vitamin A'],
+              categories: ['Sodium', 'Fiber', 'Calcium', 'Iron', 'Vitamin C', 'Salt'],
               series: [
                 { name: 'Team A', 
                   data: [
@@ -248,7 +235,7 @@ export function OverviewAnalyticsView() {
                     foodDetails.calcium_100g ?? 0, 
                     foodDetails.iron_100g ?? 0, 
                     foodDetails.vitamin_c_100g ?? 0,
-                    foodDetails.vitamin_a_100g ?? 0] },
+                    foodDetails.salt_100g ?? 0] },
               ],
             }}
           />
