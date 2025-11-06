@@ -1,9 +1,10 @@
-# Diet App - React Frontend & Node.js Backend ([Old version](https://jun7i-2.vercel.app/blogs/category2/dietapp/diet_app.html#view-html))
+# Diet App - React Frontend & Node.js Backend 
 
 ## Description
 
 This web application allows users to browse, search, and view nutritional information for a wide range of food products. It features a React-based frontend built using the Minimal UI template (Material UI) and connects to a custom Node.js/Express backend API which serves data from a MySQL database. The food data originates from the Open Food Facts dataset.
 
+The old PHP version is on my Portfolio Website([Old version](https://jun7i-2.vercel.app/blogs/category2/dietapp/diet_app.html#view-html))
 ## Features
 
 * **Food Grid View:** Displays an initial preview of food items with images and names.
